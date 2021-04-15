@@ -1,24 +1,45 @@
 <template>
   <div class="add">
     <div class="main-input">
-      <input type="text" class="add__input" placeholder="Enter your task" />
+      <input
+        type="text"
+        class="add__input"
+        placeholder="Enter your task here"
+        v-model="state.newTodoItem"
+        @keyup.enter="addTodoItem"
+      />
       <button class="add__button"></button>
     </div>
   </div>
 </template>
 
 <script>
-import { reactive, toRefs } from "vue"
+import { reactive } from "vue"
 
 export default {
   name: "input",
   setup() {
     const state = reactive({
-      count: 0,
+      newTodoItem: "",
     })
 
+    const addTodoItem = () => {
+      if (state.newTodoItem !== "") {
+        const value = {
+          item: state.newTodoItem,
+          date: `${new Date().getMonth() + 1}/${new Date().getDate()}`,
+          completed: false,
+        }
+        localStorage.setItem(state.newTodoItem, JSON.stringify(value))
+        clearInput()
+      }
+    }
+
+    const clearInput = () => (state.newTodoItem = "")
     return {
-      ...toRefs(state),
+      state,
+      addTodoItem,
+      clearInput,
     }
   },
 }
